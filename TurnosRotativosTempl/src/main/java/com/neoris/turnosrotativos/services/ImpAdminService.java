@@ -77,11 +77,21 @@ public class ImpAdminService implements IAdminService {
             verificarEmailUnico(empleadoSaveDTO.getEmail());
         }
 
-        empleado = modelMapper.map(empleadoSaveDTO, Empleado.class);
-        System.out.println(empleado);
+        /// Actualizar los campos que nos interesan
+        empleado = actualizarCampos(empleado, empleadoSaveDTO);
         empleadoRepository.save(empleado);
 
         return modelMapper.map(empleado, EmpleadoDTO.class);
+    }
+
+    private Empleado actualizarCampos(Empleado empleado, EmpleadoSaveDTO empleadoSaveDTO) {
+        empleado.setNombre(empleadoSaveDTO.getNombre());
+        empleado.setApellido(empleadoSaveDTO.getApellido());
+        empleado.setEmail(empleadoSaveDTO.getEmail());
+        empleado.setFechaIngreso(empleadoSaveDTO.getFechaIngreso());
+        empleado.setFechaNacimiento(empleadoSaveDTO.getFechaNacimiento());
+        empleado.setNroDocumento(empleadoSaveDTO.getNroDocumento());
+        return empleado;
     }
 
     private Empleado buscarEmpleado(Long empleadoId) {

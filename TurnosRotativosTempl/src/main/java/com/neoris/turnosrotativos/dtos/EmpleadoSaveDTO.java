@@ -19,12 +19,12 @@ public class EmpleadoSaveDTO {
 
     @NotNull
     @NotEmpty(message = "'nombre' es obligatorio.")
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Solo se permiten letras en el campo 'nombre'")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Solo se permiten letras en el campo 'nombre'")
     private String nombre;
 
     @NotNull
     @NotEmpty(message = "'apellido' es obligatorio.")
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Solo se permiten letras en el campo 'apellido'")
+    @Pattern(regexp = "^[a-zA-Z ]+$", message = "Solo se permiten letras en el campo 'apellido'")
     private String apellido;
 
     @NotNull

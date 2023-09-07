@@ -84,7 +84,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         Map<String, Object> responseBody = new LinkedHashMap<>();
         responseBody.put("message", ex.getMessage());
 
-        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
     }
 
 }
