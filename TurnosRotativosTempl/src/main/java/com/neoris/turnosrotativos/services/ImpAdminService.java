@@ -11,7 +11,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ImpAdminService implements IAdminService {
@@ -54,6 +57,12 @@ public class ImpAdminService implements IAdminService {
 
         /// Retornar el dto de empleado
         return modelMapper.map(nuevoEmpleado, EmpleadoDTO.class);
+    }
+
+    @Override
+    public List<EmpleadoDTO> obtenerEmpleados() {
+        List<Empleado> empleadoList = empleadoRepository.findAll();
+        return empleadoList.stream().map(empleado -> modelMapper.map(empleado, EmpleadoDTO.class)).collect(Collectors.toList());
     }
 
     private boolean verificarEdad(LocalDate fechaNacimiento, int edadMinima) {

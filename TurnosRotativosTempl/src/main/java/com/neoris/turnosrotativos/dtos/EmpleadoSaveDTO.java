@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Setter
 public class EmpleadoSaveDTO {
     @NotNull(message = "'nroDocumento' es obligatorio.")
-    private int nroDocumento;
+    private Long nroDocumento;
 
     @NotNull
     @NotEmpty(message = "'nombre' es obligatorio.")
