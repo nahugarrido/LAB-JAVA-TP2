@@ -26,7 +26,7 @@ public class AdminController {
         if(validarEntrada(empleadoSaveDTO)) {
             return ResponseEntity.status(HttpStatus.CREATED).body(iAdminService.registrarEmpleado(empleadoSaveDTO));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Solicitud no valida");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Solicitud no valida.");
         }
     }
 
@@ -47,7 +47,7 @@ public class AdminController {
         if(validarEntrada(empleadoSaveDTO)) {
             return ResponseEntity.status(HttpStatus.OK).body(iAdminService.actualizarEmpleado(empleadoSaveDTO, empleadoIdAux));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Solicitud no valida");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Solicitud no valida.");
         }
     }
 

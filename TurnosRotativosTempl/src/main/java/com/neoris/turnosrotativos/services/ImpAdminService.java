@@ -9,6 +9,7 @@ import com.neoris.turnosrotativos.exceptions.EmpleadoNoEncontradoException;
 import com.neoris.turnosrotativos.repositorys.EmpleadoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -29,6 +30,7 @@ public class ImpAdminService implements IAdminService {
     }
 
     @Override
+    @Transactional
     public EmpleadoDTO registrarEmpleado(EmpleadoSaveDTO empleadoSaveDTO) {
         verificarEdadMinimaValida(empleadoSaveDTO.getFechaNacimiento());
         verificarDocumentoUnico(empleadoSaveDTO.getNroDocumento());
@@ -52,22 +54,43 @@ public class ImpAdminService implements IAdminService {
 
     @Override
     public EmpleadoDTO obtenerEmpleado(Long empleadoId) {
+        Empleado empleado = buscarEmpleado(empleadoId);
+        return modelMapper.map(empleado, EmpleadoDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public EmpleadoDTO actualizarEmpleado(EmpleadoSaveDTO empleadoSaveDTO, Long empleadoId) {
+        /// Buscar empleado en la base de datos
+        Empleado empleado = buscarEmpleado(empleadoId);
+
+        /// Verificar edad minima valida
+        verificarEdadMinimaValida(empleadoSaveDTO.getFechaNacimiento());
+
+        /// En caso de que el 'nroDocumento' sea diferente se verifica que no exista otro empleado con ese 'nroDocumento'
+        if(!empleadoSaveDTO.getNroDocumento().equals(empleado.getNroDocumento())) {
+            verificarDocumentoUnico(empleadoSaveDTO.getNroDocumento());
+        }
+
+        /// En caso de que el 'email' sea diferente se verifica que no exista otro empleado con ese 'email'
+        if(!empleadoSaveDTO.getEmail().equals(empleado.getEmail())) {
+            verificarEmailUnico(empleadoSaveDTO.getEmail());
+        }
+
+        empleado = modelMapper.map(empleadoSaveDTO, Empleado.class);
+        System.out.println(empleado);
+        empleadoRepository.save(empleado);
+
+        return modelMapper.map(empleado, EmpleadoDTO.class);
+    }
+
+    private Empleado buscarEmpleado(Long empleadoId) {
         Optional<Empleado> empleadoOptional = empleadoRepository.findById(empleadoId);
         if(empleadoOptional.isEmpty()) {
             throw new EmpleadoNoEncontradoException("No se encontró el empleado con Id: ", empleadoId);
         } else {
-            Empleado empleado = empleadoOptional.get();
-            return modelMapper.map(empleado, EmpleadoDTO.class);
+            return empleadoOptional.get();
         }
-    }
-
-    @Override
-    public EmpleadoDTO actualizarEmpleado(EmpleadoSaveDTO empleadoSaveDTO, Long empleadoId) {
-
-        verificarEdadMinimaValida(empleadoSaveDTO.getFechaNacimiento());
-        verificarDocumentoUnico(empleadoSaveDTO.getNroDocumento());
-        verificarEmailUnico(empleadoSaveDTO.getEmail());
-        return null;
     }
 
     private Empleado crearEmpleado(EmpleadoSaveDTO empleadoSaveDTO) {
@@ -87,7 +110,7 @@ public class ImpAdminService implements IAdminService {
        }
     }
 
-    private void verificarDocumentoUnico(long nroDocumento) {
+    private void verificarDocumentoUnico(Long nroDocumento) {
         Optional<Empleado> empleadoOptional = empleadoRepository.findByNroDocumento(nroDocumento);
         if (empleadoOptional.isPresent()) {
             throw new EmpleadoExistenteException("Ya existe un empleado con el documento ingresado.");
