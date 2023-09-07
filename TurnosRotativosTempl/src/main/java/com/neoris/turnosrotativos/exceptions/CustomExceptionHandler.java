@@ -77,4 +77,14 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(EmpleadoNoEncontradoException.class)
+    public ResponseEntity<Object> handleEdadMinimaNoValidaException(
+            EmpleadoNoEncontradoException ex, WebRequest request
+    ) {
+        Map<String, Object> responseBody = new LinkedHashMap<>();
+        responseBody.put("message", ex.getMessage());
+
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+    }
+
 }

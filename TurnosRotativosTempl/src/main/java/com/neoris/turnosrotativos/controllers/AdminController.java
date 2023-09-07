@@ -6,10 +6,7 @@ import com.neoris.turnosrotativos.exceptions.FechaNoValidaException;
 import com.neoris.turnosrotativos.services.IAdminService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -37,6 +34,23 @@ public class AdminController {
     public ResponseEntity<List<EmpleadoDTO>> obtenerEmpleados() {
             return ResponseEntity.status(HttpStatus.OK).body(iAdminService.obtenerEmpleados());
     }
+
+    @GetMapping(value ="/empleado/{empleadoId}")
+    public ResponseEntity<EmpleadoDTO> obtenerEmpleado(@PathVariable String empleadoId) {
+        Long empleadoIdAux = Long.parseLong(empleadoId);
+        return ResponseEntity.status(HttpStatus.OK).body(iAdminService.obtenerEmpleado(empleadoIdAux));
+    }
+
+    @PutMapping(value = "/empleado/{empleadoId}")
+    public ResponseEntity<?> actualizarEmpleado(@Valid @RequestBody EmpleadoSaveDTO empleadoSaveDTO, @PathVariable String empleadoId) {
+        Long empleadoIdAux = Long.parseLong(empleadoId);
+        if(validarEntrada(empleadoSaveDTO)) {
+            return ResponseEntity.status(HttpStatus.OK).body(iAdminService.actualizarEmpleado(empleadoSaveDTO, empleadoIdAux));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Solicitud no valida");
+        }
+    }
+
 
 
 

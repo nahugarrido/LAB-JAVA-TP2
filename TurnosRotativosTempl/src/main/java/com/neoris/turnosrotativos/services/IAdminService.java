@@ -10,4 +10,8 @@ public interface IAdminService {
     EmpleadoDTO registrarEmpleado(EmpleadoSaveDTO empleadoSaveDTO);
 
     List<EmpleadoDTO> obtenerEmpleados();
+
+    EmpleadoDTO obtenerEmpleado(Long empleadoIdAux);
+
+    EmpleadoDTO actualizarEmpleado(EmpleadoSaveDTO empleadoSaveDTO, Long empleadoId);
 }

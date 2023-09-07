@@ -5,22 +5,22 @@ import com.neoris.turnosrotativos.dtos.EmpleadoSaveDTO;
 import com.neoris.turnosrotativos.entities.Empleado;
 import com.neoris.turnosrotativos.exceptions.EdadMinimaNoValidaException;
 import com.neoris.turnosrotativos.exceptions.EmpleadoExistenteException;
+import com.neoris.turnosrotativos.exceptions.EmpleadoNoEncontradoException;
 import com.neoris.turnosrotativos.repositorys.EmpleadoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ImpAdminService implements IAdminService {
+    private static final int EDAD_MINIMA = 18;
 
     private final EmpleadoRepository empleadoRepository;
-
     private final ModelMapper modelMapper;
 
     public ImpAdminService(EmpleadoRepository empleadoRepository, ModelMapper modelMapper) {
@@ -30,29 +30,14 @@ public class ImpAdminService implements IAdminService {
 
     @Override
     public EmpleadoDTO registrarEmpleado(EmpleadoSaveDTO empleadoSaveDTO) {
-        /// Verificar edad de empleado valida
-        if(!verificarEdad(empleadoSaveDTO.getFechaNacimiento(), 18)) {
-            throw new EdadMinimaNoValidaException("La edad del empleado no puede ser menor a 18 años.");
-        }
-
-        /// Verificar que el documento ingresado no existe
-        Optional<Empleado> empleadoOptional1 = empleadoRepository.findByNroDocumento(empleadoSaveDTO.getNroDocumento());
-        if(empleadoOptional1.isPresent()) {
-            throw new EmpleadoExistenteException("Ya existe un empleado con el documento ingresado.");
-        }
-
-        /// Verificar que el mail ingresado no existe
-        Optional<Empleado> empleadoOptional2 = empleadoRepository.findByEmail(empleadoSaveDTO.getEmail());
-        if(empleadoOptional2.isPresent()) {
-            throw new EmpleadoExistenteException("Ya existe un empleado con el email ingresado.");
-        }
-
+        verificarEdadMinimaValida(empleadoSaveDTO.getFechaNacimiento());
+        verificarDocumentoUnico(empleadoSaveDTO.getNroDocumento());
+        verificarEmailUnico(empleadoSaveDTO.getEmail());
 
         /// Creacion de entidad
-        Empleado nuevoEmpleado = modelMapper.map(empleadoSaveDTO, Empleado.class);
-        nuevoEmpleado.setFechaCreacion(LocalDate.now());
+        Empleado nuevoEmpleado = crearEmpleado(empleadoSaveDTO);
 
-        /// Persistencia
+        /// Persistir la entidad
         empleadoRepository.save(nuevoEmpleado);
 
         /// Retornar el dto de empleado
@@ -65,11 +50,54 @@ public class ImpAdminService implements IAdminService {
         return empleadoList.stream().map(empleado -> modelMapper.map(empleado, EmpleadoDTO.class)).collect(Collectors.toList());
     }
 
-    private boolean verificarEdad(LocalDate fechaNacimiento, int edadMinima) {
+    @Override
+    public EmpleadoDTO obtenerEmpleado(Long empleadoId) {
+        Optional<Empleado> empleadoOptional = empleadoRepository.findById(empleadoId);
+        if(empleadoOptional.isEmpty()) {
+            throw new EmpleadoNoEncontradoException("No se encontró el empleado con Id: ", empleadoId);
+        } else {
+            Empleado empleado = empleadoOptional.get();
+            return modelMapper.map(empleado, EmpleadoDTO.class);
+        }
+    }
+
+    @Override
+    public EmpleadoDTO actualizarEmpleado(EmpleadoSaveDTO empleadoSaveDTO, Long empleadoId) {
+
+        verificarEdadMinimaValida(empleadoSaveDTO.getFechaNacimiento());
+        verificarDocumentoUnico(empleadoSaveDTO.getNroDocumento());
+        verificarEmailUnico(empleadoSaveDTO.getEmail());
+        return null;
+    }
+
+    private Empleado crearEmpleado(EmpleadoSaveDTO empleadoSaveDTO) {
+        Empleado nuevoEmpleado = modelMapper.map(empleadoSaveDTO, Empleado.class);
+        nuevoEmpleado.setFechaCreacion(LocalDate.now());
+        return nuevoEmpleado;
+    }
+
+    private void verificarEdadMinimaValida(LocalDate fechaNacimiento) {
         LocalDate fechaActual = LocalDate.now();
         Period periodo = Period.between(fechaNacimiento, fechaActual);
         int edad = periodo.getYears();
 
-        return edad >= edadMinima;
+       if(edad <= EDAD_MINIMA) {
+           throw new EdadMinimaNoValidaException("La edad del empleado no puede ser menor a 18 años.");
+
+       }
+    }
+
+    private void verificarDocumentoUnico(long nroDocumento) {
+        Optional<Empleado> empleadoOptional = empleadoRepository.findByNroDocumento(nroDocumento);
+        if (empleadoOptional.isPresent()) {
+            throw new EmpleadoExistenteException("Ya existe un empleado con el documento ingresado.");
+        }
+    }
+
+    private void verificarEmailUnico(String email) {
+        Optional<Empleado> empleadoOptional = empleadoRepository.findByEmail(email);
+        if (empleadoOptional.isPresent()) {
+            throw new EmpleadoExistenteException("Ya existe un empleado con el email ingresado.");
+        }
     }
 }
