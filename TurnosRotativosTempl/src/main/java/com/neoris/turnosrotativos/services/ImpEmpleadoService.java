@@ -6,7 +6,7 @@ import com.neoris.turnosrotativos.entities.Empleado;
 import com.neoris.turnosrotativos.exceptions.EdadMinimaNoValidaException;
 import com.neoris.turnosrotativos.exceptions.EmpleadoExistenteException;
 import com.neoris.turnosrotativos.exceptions.EmpleadoNoEncontradoException;
-import com.neoris.turnosrotativos.repositorys.EmpleadoRepository;
+import com.neoris.turnosrotativos.repositories.EmpleadoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
