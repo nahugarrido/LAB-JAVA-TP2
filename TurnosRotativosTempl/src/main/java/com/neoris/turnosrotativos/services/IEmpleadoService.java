@@ -5,7 +5,7 @@ import com.neoris.turnosrotativos.dtos.EmpleadoSaveDTO;
 
 import java.util.List;
 
-public interface IAdminService {
+public interface IEmpleadoService {
 
     EmpleadoDTO registrarEmpleado(EmpleadoSaveDTO empleadoSaveDTO);
 

@@ -18,13 +18,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class ImpAdminService implements IAdminService {
+public class ImpEmpleadoService implements IEmpleadoService {
     private static final int EDAD_MINIMA = 18;
 
     private final EmpleadoRepository empleadoRepository;
     private final ModelMapper modelMapper;
 
-    public ImpAdminService(EmpleadoRepository empleadoRepository, ModelMapper modelMapper) {
+    public ImpEmpleadoService(EmpleadoRepository empleadoRepository, ModelMapper modelMapper) {
         this.empleadoRepository = empleadoRepository;
         this.modelMapper = modelMapper;
     }

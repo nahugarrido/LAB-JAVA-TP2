@@ -5,10 +5,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-/**
- * Esta clase se utiliza solo para mostrar información
- * por lo que no hacen falta verificaciones en ella
- * */
 @Getter
 @Setter
 public class EmpleadoDTO {

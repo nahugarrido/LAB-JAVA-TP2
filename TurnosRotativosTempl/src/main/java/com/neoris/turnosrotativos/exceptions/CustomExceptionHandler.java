@@ -46,6 +46,15 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(responseBody, headers, status);
     }
 
+    @ExceptionHandler(NumberFormatException.class)
+    public ResponseEntity<Object> handleNumberFormatException(
+            NumberFormatException ex, WebRequest request
+    ) {
+        Map<String, Object> responseBody = new LinkedHashMap<>();
+        responseBody.put("message","El valor proporcionado no es un número válido.");
+
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(EdadMinimaNoValidaException.class)
     public ResponseEntity<Object> handleEdadMinimaNoValidaException(
@@ -58,7 +67,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(EmpleadoExistenteException.class)
-    public ResponseEntity<Object> handleEdadMinimaNoValidaException(
+    public ResponseEntity<Object> handleEmpleadoExistenteException(
             EmpleadoExistenteException ex, WebRequest request
     ) {
         Map<String, Object> responseBody = new LinkedHashMap<>();
@@ -68,7 +77,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(FechaNoValidaException.class)
-    public ResponseEntity<Object> handleEdadMinimaNoValidaException(
+    public ResponseEntity<Object> handleFechaNoValidaException(
             FechaNoValidaException ex, WebRequest request
     ) {
         Map<String, Object> responseBody = new LinkedHashMap<>();
@@ -78,7 +87,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(EmpleadoNoEncontradoException.class)
-    public ResponseEntity<Object> handleEdadMinimaNoValidaException(
+    public ResponseEntity<Object> handleEmpleadoNoEncontradoException(
             EmpleadoNoEncontradoException ex, WebRequest request
     ) {
         Map<String, Object> responseBody = new LinkedHashMap<>();
