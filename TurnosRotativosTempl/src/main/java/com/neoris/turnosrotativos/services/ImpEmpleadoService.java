@@ -61,23 +61,17 @@ public class ImpEmpleadoService implements IEmpleadoService {
     @Override
     @Transactional
     public EmpleadoDTO actualizarEmpleado(EmpleadoSaveDTO empleadoSaveDTO, Long empleadoId) {
-        /// Buscar empleado en la base de datos
         Empleado empleado = buscarEmpleado(empleadoId);
-
-        /// Verificar edad minima valida
         verificarEdadMinimaValida(empleadoSaveDTO.getFechaNacimiento());
 
-        /// En caso de que el 'nroDocumento' sea diferente se verifica que no exista otro empleado con ese 'nroDocumento'
         if(!empleadoSaveDTO.getNroDocumento().equals(empleado.getNroDocumento())) {
             verificarDocumentoUnico(empleadoSaveDTO.getNroDocumento());
         }
 
-        /// En caso de que el 'email' sea diferente se verifica que no exista otro empleado con ese 'email'
         if(!empleadoSaveDTO.getEmail().equals(empleado.getEmail())) {
             verificarEmailUnico(empleadoSaveDTO.getEmail());
         }
 
-        /// Actualizar los campos que nos interesan
         empleado = actualizarCampos(empleado, empleadoSaveDTO);
         empleadoRepository.save(empleado);
 
