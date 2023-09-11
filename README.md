@@ -1,7 +1,7 @@
 # LAB-JAVA-TP2
 <h1 align = "center">🕑 Jornadas Laborales 👨‍💻</h1>
 <p align="center">
-<img src="https://gdempresa.gesdocument.com/sites/default/files/styles/large/public/2022-04/sentencia-registro-jornada.jpg?itok=zOfNlPW2" style="max-width: 100%; display: inline-block;" />
+<img src="https://wallpapercave.com/wp/wp1842342.jpg" style="max-width: 100%; display: inline-block;" />
 </p>
 
 
