@@ -80,6 +80,32 @@ public class ImpJornadaService implements IJornadaService {
         return modelMapper.map(nuevaJornadaEntity, JornadaDTO.class);
     }
 
+    @Override
+    public List<JornadaDTO> obtenerJornadasPorNroDocumentoYFecha(Long nroDocumento, LocalDate fecha) {
+        Empleado empleado = iEmpleadoService.buscarEmpleadoEntityPorNroDocumento(nroDocumento);
+        List<Jornada> jornadas = jornadaRepository.findAllByEmpleadoAndFecha(empleado, fecha);
+        return jornadas.stream().map(jornada -> modelMapper.map(jornada, JornadaDTO.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<JornadaDTO> obtenerJornadasPorNroDocumento(Long nroDocumento) {
+        Empleado empleado = iEmpleadoService.buscarEmpleadoEntityPorNroDocumento(nroDocumento);
+        List<Jornada> jornadas = jornadaRepository.findAllByEmpleado(empleado);
+        return jornadas.stream().map(jornada -> modelMapper.map(jornada, JornadaDTO.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<JornadaDTO> obtenerJornadasPorFecha(LocalDate fecha) {
+        List<Jornada> jornadas = jornadaRepository.findAllByFecha(fecha);
+        return jornadas.stream().map(jornada -> modelMapper.map(jornada, JornadaDTO.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<JornadaDTO> obtenerJornadas() {
+       List<Jornada> jornadas = jornadaRepository.findAll();
+       return jornadas.stream().map(jornada -> modelMapper.map(jornada, JornadaDTO.class)).collect(Collectors.toList());
+    }
+
     /* No encontre otra forma de poder validar esto siendo que la otra opcion era asumir cual era el valor de cada id y no queria hacer eso */
     private void validarConceptoHsTrabajadas(Concepto concepto, Integer horasTrabajadas) {
         if(concepto.getNombre().equals(CONCEPTO_TURNO_NORMAL) || concepto.getNombre().equals(CONCEPTO_TURNO_EXTRA)) {
@@ -188,6 +214,5 @@ public class ImpJornadaService implements IJornadaService {
                 .filter(jornada -> !jornada.getFecha().isBefore(primerDiaDeLaSemana) && !jornada.getFecha().isAfter(ultimoDiaDeLaSemana))
                 .collect(Collectors.toList());
     }
-
 
 }

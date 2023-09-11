@@ -43,4 +43,11 @@ public class EmpleadoController {
 
     }
 
+    @DeleteMapping(value = "/{empleadoId}")
+    public ResponseEntity<?> eliminarEmpleado(@PathVariable String empleadoId) {
+        Long empleadoIdAux = Long.parseLong(empleadoId);
+        iEmpleadoService.eliminarEmpleado(empleadoIdAux);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }

@@ -86,6 +86,23 @@ public class ImpEmpleadoService implements IEmpleadoService {
         }
     }
 
+    /* Esta funcion se utiliza en jornadaService */
+    @Override
+    public Empleado buscarEmpleadoEntityPorNroDocumento(Long nroDocumento) {
+        Optional<Empleado> empleadoOptional = empleadoRepository.findByNroDocumento(nroDocumento);
+        if(empleadoOptional.isEmpty()) {
+            throw new EntidadNoEncontradaException("No existe el empleado ingresado.");
+        } else {
+            return empleadoOptional.get();
+        }
+    }
+
+    @Override
+    public void eliminarEmpleado(Long empleadoId) {
+        Empleado empleado = buscarEmpleado(empleadoId);
+        empleadoRepository.delete(empleado);
+    }
+
     private Empleado buscarEmpleado(Long empleadoId) {
         Optional<Empleado> empleadoOptional = empleadoRepository.findById(empleadoId);
         if(empleadoOptional.isEmpty()) {

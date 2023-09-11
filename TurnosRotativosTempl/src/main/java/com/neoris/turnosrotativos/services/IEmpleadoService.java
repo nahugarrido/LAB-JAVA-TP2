@@ -16,4 +16,8 @@ public interface IEmpleadoService {
     EmpleadoDTO actualizarEmpleado(EmpleadoSaveDTO empleadoSaveDTO, Long empleadoId);
 
     Empleado buscarEmpleadoEntity(Long idEmpleado);
+
+    Empleado buscarEmpleadoEntityPorNroDocumento(Long nroDocumento);
+
+    void eliminarEmpleado(Long empleadoId);
 }
