@@ -80,9 +80,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
-    @ExceptionHandler(hsTrabajadasNoValidaException.class)
-    public ResponseEntity<Object> handlehsTrabajadasNoValidaException(
-            hsTrabajadasNoValidaException ex
+    @ExceptionHandler(HsTrabajadasNoValidaException.class)
+    public ResponseEntity<Object> handleHsTrabajadasNoValidaException(
+            HsTrabajadasNoValidaException ex
     ) {
         Map<String, Object> responseBody = new LinkedHashMap<>();
         responseBody.put("message", ex.getMessage());

@@ -5,10 +5,6 @@ import com.neoris.turnosrotativos.entities.Empleado;
 import org.modelmapper.AbstractConverter;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.Month;
-
-
 @Component
 public class EmpleadoConverter extends AbstractConverter<Empleado, EmpleadoDTO> {
 

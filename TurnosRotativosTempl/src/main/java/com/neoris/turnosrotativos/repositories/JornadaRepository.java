@@ -29,4 +29,6 @@ public interface JornadaRepository extends JpaRepository<Jornada, Long> {
     boolean existsJornadaMismaFechaConcepto(@Param("empleado") Empleado empleado, @Param("fecha") LocalDate fecha, @Param("concepto") Concepto concepto);
 
     List<Jornada> findAllByEmpleadoAndFecha(Empleado empleado, LocalDate fecha);
+
+    List<Jornada> findAllByEmpleado(Empleado empleado);
 }
