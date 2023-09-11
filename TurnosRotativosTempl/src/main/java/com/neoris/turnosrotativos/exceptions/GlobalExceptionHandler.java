@@ -87,7 +87,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         Map<String, Object> responseBody = new LinkedHashMap<>();
         responseBody.put("message", ex.getMessage());
 
-        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(JornadaNoValidaException.class)

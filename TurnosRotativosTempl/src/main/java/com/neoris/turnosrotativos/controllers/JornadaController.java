@@ -3,6 +3,7 @@ package com.neoris.turnosrotativos.controllers;
 import com.neoris.turnosrotativos.dtos.JornadaDTO;
 import com.neoris.turnosrotativos.dtos.JornadaSaveDTO;
 import com.neoris.turnosrotativos.services.IJornadaService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,10 @@ public class JornadaController {
 
     @PostMapping
     public ResponseEntity<JornadaDTO> registrarJornada(@Valid @RequestBody JornadaSaveDTO jornadaSaveDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(iJornadaService.registrarJornada(jornadaSaveDTO));
+        JornadaDTO jornadaDTO = iJornadaService.registrarJornada(jornadaSaveDTO);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set(HttpHeaders.LOCATION, String.format("/jornada/%d", jornadaDTO.getId()));
+        return new ResponseEntity<>(jornadaDTO, responseHeaders, HttpStatus.CREATED);
     }
 
     @GetMapping

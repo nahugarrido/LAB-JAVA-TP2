@@ -10,11 +10,14 @@ import com.neoris.turnosrotativos.exceptions.HsTrabajadasNoValidaException;
 import com.neoris.turnosrotativos.repositories.JornadaRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -42,6 +45,7 @@ public class ImpJornadaService implements IJornadaService {
     }
 
     @Override
+    @Transactional
     public JornadaDTO registrarJornada(JornadaSaveDTO nuevaJornada) {
         Empleado empleado = iEmpleadoService.buscarEmpleadoEntity(nuevaJornada.getIdEmpleado());
         Concepto concepto = iConceptoService.buscarConceptoEntity(nuevaJornada.getIdConcepto());
@@ -80,17 +84,25 @@ public class ImpJornadaService implements IJornadaService {
         return modelMapper.map(nuevaJornadaEntity, JornadaDTO.class);
     }
 
+    /* La historia de usuario requeria devolver una lista vacia en caso de no encontrar el empleado */
     @Override
     public List<JornadaDTO> obtenerJornadasPorNroDocumentoYFecha(Long nroDocumento, LocalDate fecha) {
-        Empleado empleado = iEmpleadoService.buscarEmpleadoEntityPorNroDocumento(nroDocumento);
-        List<Jornada> jornadas = jornadaRepository.findAllByEmpleadoAndFecha(empleado, fecha);
+        Optional<Empleado> empleadoOptional = iEmpleadoService.buscarEmpleadoEntityPorNroDocumento(nroDocumento);
+        List<Jornada> jornadas = new ArrayList<>();
+        if(empleadoOptional.isPresent()) {
+            jornadas = jornadaRepository.findAllByEmpleadoAndFecha(empleadoOptional.get(), fecha);
+        }
         return jornadas.stream().map(jornada -> modelMapper.map(jornada, JornadaDTO.class)).collect(Collectors.toList());
     }
 
+    /* La historia de usuario requeria devolver una lista vacia en caso de no encontrar el empleado */
     @Override
     public List<JornadaDTO> obtenerJornadasPorNroDocumento(Long nroDocumento) {
-        Empleado empleado = iEmpleadoService.buscarEmpleadoEntityPorNroDocumento(nroDocumento);
-        List<Jornada> jornadas = jornadaRepository.findAllByEmpleado(empleado);
+        Optional<Empleado> empleadoOptional = iEmpleadoService.buscarEmpleadoEntityPorNroDocumento(nroDocumento);
+        List<Jornada> jornadas = new ArrayList<>();
+        if(empleadoOptional.isPresent()) {
+            jornadas = jornadaRepository.findAllByEmpleado(empleadoOptional.get());
+        }
         return jornadas.stream().map(jornada -> modelMapper.map(jornada, JornadaDTO.class)).collect(Collectors.toList());
     }
 

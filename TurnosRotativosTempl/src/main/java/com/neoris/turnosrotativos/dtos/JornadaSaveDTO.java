@@ -1,6 +1,8 @@
 package com.neoris.turnosrotativos.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -14,6 +16,8 @@ public class JornadaSaveDTO {
     private Integer idConcepto;
 
     @NotNull(message = "'fecha' es obligatorio.")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fecha;
 
     private Integer horasTrabajadas;

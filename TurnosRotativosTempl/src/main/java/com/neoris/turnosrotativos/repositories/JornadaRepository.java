@@ -33,4 +33,6 @@ public interface JornadaRepository extends JpaRepository<Jornada, Long> {
     List<Jornada> findAllByEmpleado(Empleado empleado);
 
     List<Jornada> findAllByFecha(LocalDate fecha);
+
+    void deleteAllByEmpleado(Empleado empleado);
 }

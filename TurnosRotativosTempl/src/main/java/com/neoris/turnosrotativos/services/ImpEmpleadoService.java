@@ -8,6 +8,7 @@ import com.neoris.turnosrotativos.exceptions.EmpleadoExistenteException;
 import com.neoris.turnosrotativos.exceptions.EmpleadoNoEncontradoException;
 import com.neoris.turnosrotativos.exceptions.EntidadNoEncontradaException;
 import com.neoris.turnosrotativos.repositories.EmpleadoRepository;
+import com.neoris.turnosrotativos.repositories.JornadaRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,14 +20,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/* Agrego repositorio de jornadas para poder eliminar las jornadas asociadas a un empleado,
+ * si no agregaba el repositorio no podia borrar empleados que tuvieran jornadas asociadas,
+ * trate de agregar jornadaService pero si hago eso se crea uan dependencia circular */
 @Service
 public class ImpEmpleadoService implements IEmpleadoService {
     private static final int EDAD_MINIMA = 18;
     private final EmpleadoRepository empleadoRepository;
+    private final JornadaRepository jornadaRepository;
     private final ModelMapper modelMapper;
 
-    public ImpEmpleadoService(EmpleadoRepository empleadoRepository, ModelMapper modelMapper) {
+    public ImpEmpleadoService(EmpleadoRepository empleadoRepository, JornadaRepository jornadaRepository, ModelMapper modelMapper) {
         this.empleadoRepository = empleadoRepository;
+        this.jornadaRepository = jornadaRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -88,18 +94,15 @@ public class ImpEmpleadoService implements IEmpleadoService {
 
     /* Esta funcion se utiliza en jornadaService */
     @Override
-    public Empleado buscarEmpleadoEntityPorNroDocumento(Long nroDocumento) {
-        Optional<Empleado> empleadoOptional = empleadoRepository.findByNroDocumento(nroDocumento);
-        if(empleadoOptional.isEmpty()) {
-            throw new EntidadNoEncontradaException("No existe el empleado ingresado.");
-        } else {
-            return empleadoOptional.get();
-        }
+    public Optional<Empleado> buscarEmpleadoEntityPorNroDocumento(Long nroDocumento) {
+        return empleadoRepository.findByNroDocumento(nroDocumento);
     }
 
     @Override
+    @Transactional
     public void eliminarEmpleado(Long empleadoId) {
         Empleado empleado = buscarEmpleado(empleadoId);
+        jornadaRepository.deleteAllByEmpleado(empleado);
         empleadoRepository.delete(empleado);
     }
 
