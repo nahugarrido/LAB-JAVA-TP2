@@ -6,7 +6,7 @@ import com.neoris.turnosrotativos.entities.Empleado;
 import com.neoris.turnosrotativos.exceptions.EdadMinimaNoValidaException;
 import com.neoris.turnosrotativos.exceptions.EmpleadoExistenteException;
 import com.neoris.turnosrotativos.exceptions.EmpleadoNoEncontradoException;
-import com.neoris.turnosrotativos.exceptions.NoEncontradoException;
+import com.neoris.turnosrotativos.exceptions.EntidadNoEncontradaException;
 import com.neoris.turnosrotativos.repositories.EmpleadoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -80,7 +80,7 @@ public class ImpEmpleadoService implements IEmpleadoService {
     public Empleado buscarEmpleadoEntity(Long idEmpleado) {
         Optional<Empleado> empleadoOptional = empleadoRepository.findById(idEmpleado);
         if(empleadoOptional.isEmpty()) {
-            throw new NoEncontradoException("No existe el empleado ingresado.");
+            throw new EntidadNoEncontradaException("No existe el empleado ingresado.");
         } else {
             return empleadoOptional.get();
         }

@@ -39,7 +39,4 @@ public class Empleado {
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDateTime fechaCreacion;
 
-    @OneToMany(mappedBy = "empleado")
-    private List<Jornada> jornadas;
-
 }

@@ -2,7 +2,7 @@ package com.neoris.turnosrotativos.services;
 
 import com.neoris.turnosrotativos.dtos.ConceptoDTO;
 import com.neoris.turnosrotativos.entities.Concepto;
-import com.neoris.turnosrotativos.exceptions.NoEncontradoException;
+import com.neoris.turnosrotativos.exceptions.EntidadNoEncontradaException;
 import com.neoris.turnosrotativos.repositories.ConceptoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class ImpConceptoService implements IConceptoService {
     public Concepto buscarConceptoEntity(Integer conceptoId) {
         Optional<Concepto> conceptoOptional = conceptoRepository.findById(conceptoId);
         if(conceptoOptional.isEmpty()) {
-            throw new NoEncontradoException("No existe el concepto ingresado.");
+            throw new EntidadNoEncontradaException("No existe el concepto ingresado.");
         } else {
             return conceptoOptional.get();
         }

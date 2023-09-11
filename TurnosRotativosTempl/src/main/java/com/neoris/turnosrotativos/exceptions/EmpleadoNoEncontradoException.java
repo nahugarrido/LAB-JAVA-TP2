@@ -1,7 +1,10 @@
 package com.neoris.turnosrotativos.exceptions;
 
+import lombok.Getter;
+
+@Getter
 public class EmpleadoNoEncontradoException extends RuntimeException {
-    private Long empleadoId;
+    private final Long empleadoId;
 
     public EmpleadoNoEncontradoException(String message, Long empleadoId) {
         super(message);
@@ -10,6 +13,6 @@ public class EmpleadoNoEncontradoException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return super.getMessage() + empleadoId;
+        return super.getMessage() + this.getEmpleadoId();
     }
 }
