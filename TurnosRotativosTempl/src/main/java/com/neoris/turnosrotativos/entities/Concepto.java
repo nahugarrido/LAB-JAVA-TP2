@@ -1,19 +1,33 @@
 package com.neoris.turnosrotativos.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity(name = "conceptos")
 public class Concepto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
+    @Column(name = "nombre")
     private String nombre;
+
+    @Column(name = "laborable")
     private Boolean laborable;
+
+    @Column(name = "hs_minimo")
     private Integer hsMinimo;
+
+    @Column(name = "hs_maximo")
     private Integer hsMaximo;
 
     public Integer getId() {

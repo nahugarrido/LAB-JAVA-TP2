@@ -6,12 +6,14 @@ import com.neoris.turnosrotativos.entities.Empleado;
 import com.neoris.turnosrotativos.exceptions.EdadMinimaNoValidaException;
 import com.neoris.turnosrotativos.exceptions.EmpleadoExistenteException;
 import com.neoris.turnosrotativos.exceptions.EmpleadoNoEncontradoException;
+import com.neoris.turnosrotativos.exceptions.NoEncontradoException;
 import com.neoris.turnosrotativos.repositories.EmpleadoRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +22,6 @@ import java.util.stream.Collectors;
 @Service
 public class ImpEmpleadoService implements IEmpleadoService {
     private static final int EDAD_MINIMA = 18;
-
     private final EmpleadoRepository empleadoRepository;
     private final ModelMapper modelMapper;
 
@@ -36,13 +37,9 @@ public class ImpEmpleadoService implements IEmpleadoService {
         verificarDocumentoUnico(empleadoSaveDTO.getNroDocumento());
         verificarEmailUnico(empleadoSaveDTO.getEmail());
 
-        /// Creacion de entidad
         Empleado nuevoEmpleado = crearEmpleado(empleadoSaveDTO);
-
-        /// Persistir la entidad
         empleadoRepository.save(nuevoEmpleado);
 
-        /// Retornar el dto de empleado
         return modelMapper.map(nuevoEmpleado, EmpleadoDTO.class);
     }
 
@@ -61,31 +58,32 @@ public class ImpEmpleadoService implements IEmpleadoService {
     @Override
     @Transactional
     public EmpleadoDTO actualizarEmpleado(EmpleadoSaveDTO empleadoSaveDTO, Long empleadoId) {
-        Empleado empleado = buscarEmpleado(empleadoId);
+        Empleado encontrado = buscarEmpleado(empleadoId);
         verificarEdadMinimaValida(empleadoSaveDTO.getFechaNacimiento());
 
-        if(!empleadoSaveDTO.getNroDocumento().equals(empleado.getNroDocumento())) {
+        if(!empleadoSaveDTO.getNroDocumento().equals(encontrado.getNroDocumento())) {
             verificarDocumentoUnico(empleadoSaveDTO.getNroDocumento());
         }
 
-        if(!empleadoSaveDTO.getEmail().equals(empleado.getEmail())) {
+        if(!empleadoSaveDTO.getEmail().equals(encontrado.getEmail())) {
             verificarEmailUnico(empleadoSaveDTO.getEmail());
         }
 
-        empleado = actualizarCampos(empleado, empleadoSaveDTO);
-        empleadoRepository.save(empleado);
+        Empleado empleadoSave = actualizarCampos(encontrado, empleadoSaveDTO);
+        empleadoRepository.save(empleadoSave);
 
-        return modelMapper.map(empleado, EmpleadoDTO.class);
+        return modelMapper.map(encontrado, EmpleadoDTO.class);
     }
 
-    private Empleado actualizarCampos(Empleado empleado, EmpleadoSaveDTO empleadoSaveDTO) {
-        empleado.setNombre(empleadoSaveDTO.getNombre());
-        empleado.setApellido(empleadoSaveDTO.getApellido());
-        empleado.setEmail(empleadoSaveDTO.getEmail());
-        empleado.setFechaIngreso(empleadoSaveDTO.getFechaIngreso());
-        empleado.setFechaNacimiento(empleadoSaveDTO.getFechaNacimiento());
-        empleado.setNroDocumento(empleadoSaveDTO.getNroDocumento());
-        return empleado;
+    /* Esta funcion se utiliza en jornadaService */
+    @Override
+    public Empleado buscarEmpleadoEntity(Long idEmpleado) {
+        Optional<Empleado> empleadoOptional = empleadoRepository.findById(idEmpleado);
+        if(empleadoOptional.isEmpty()) {
+            throw new NoEncontradoException("No existe el empleado ingresado.");
+        } else {
+            return empleadoOptional.get();
+        }
     }
 
     private Empleado buscarEmpleado(Long empleadoId) {
@@ -97,9 +95,19 @@ public class ImpEmpleadoService implements IEmpleadoService {
         }
     }
 
+    private Empleado actualizarCampos(Empleado empleado, EmpleadoSaveDTO empleadoNuevo) {
+        empleado.setNombre(empleadoNuevo.getNombre());
+        empleado.setApellido(empleadoNuevo.getApellido());
+        empleado.setEmail(empleadoNuevo.getEmail());
+        empleado.setFechaIngreso(empleadoNuevo.getFechaIngreso());
+        empleado.setFechaNacimiento(empleadoNuevo.getFechaNacimiento());
+        empleado.setNroDocumento(empleadoNuevo.getNroDocumento());
+        return empleado;
+    }
+
     private Empleado crearEmpleado(EmpleadoSaveDTO empleadoSaveDTO) {
         Empleado nuevoEmpleado = modelMapper.map(empleadoSaveDTO, Empleado.class);
-        nuevoEmpleado.setFechaCreacion(LocalDate.now());
+        nuevoEmpleado.setFechaCreacion(LocalDateTime.now());
         return nuevoEmpleado;
     }
 

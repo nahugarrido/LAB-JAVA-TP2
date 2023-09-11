@@ -1,5 +1,7 @@
 package com.neoris.turnosrotativos;
 
+import com.neoris.turnosrotativos.converters.EmpleadoConverter;
+import com.neoris.turnosrotativos.converters.JornadaConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
@@ -20,7 +22,11 @@ public class TurnosrotativosApplication {
 	}
 
 	@Bean
-	public ModelMapper modelMapper() {
-		return new ModelMapper();
+	public ModelMapper modelMapper(EmpleadoConverter empleadoConverter, JornadaConverter jornadaConverter) {
+		ModelMapper modelMapper = new ModelMapper();
+		modelMapper.addConverter(jornadaConverter);
+		modelMapper.addConverter(empleadoConverter);
+
+		return modelMapper;
 	}
 }

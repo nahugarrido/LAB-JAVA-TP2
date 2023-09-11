@@ -1,18 +1,13 @@
 package com.neoris.turnosrotativos.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
 public class EmpleadoSaveDTO {
     @NotNull(message = "'nroDocumento' es obligatorio.")
     private Long nroDocumento;
@@ -35,10 +30,12 @@ public class EmpleadoSaveDTO {
     @NotNull(message = "'fechaNacimiento' es obligatorio.")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Past(message = "La fecha de nacimiento no puede ser posterior al día de la fecha.")
     private LocalDate fechaNacimiento;
 
     @NotNull(message = "'fechaIngreso' es obligatorio.")
     @JsonFormat(pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Past(message = "La fecha de ingreso no puede ser posterior al día de la fecha.")
     private LocalDate fechaIngreso;
 }

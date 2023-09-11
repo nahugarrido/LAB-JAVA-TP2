@@ -76,19 +76,30 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(responseBody, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(FechaNoValidaException.class)
-    public ResponseEntity<Object> handleFechaNoValidaException(
-            FechaNoValidaException ex, WebRequest request
+    @ExceptionHandler(EmpleadoNoEncontradoException.class)
+    public ResponseEntity<Object> handleEmpleadoNoEncontradoException(
+            EmpleadoNoEncontradoException ex, WebRequest request
     ) {
         Map<String, Object> responseBody = new LinkedHashMap<>();
         responseBody.put("message", ex.getMessage());
 
-        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(EmpleadoNoEncontradoException.class)
-    public ResponseEntity<Object> handleEmpleadoNoEncontradoException(
-            EmpleadoNoEncontradoException ex, WebRequest request
+    @ExceptionHandler(NoEncontradoException.class)
+    public ResponseEntity<Object> handleNoEncontradoException(
+            NoEncontradoException ex, WebRequest request
+    ) {
+        Map<String, Object> responseBody = new LinkedHashMap<>();
+        responseBody.put("message", ex.getMessage());
+
+        return new ResponseEntity<>(responseBody, HttpStatus.NOT_FOUND);
+    }
+
+
+    @ExceptionHandler(hsTrabajadasNoValidaException.class)
+    public ResponseEntity<Object> handlehsTrabajadasNoValidaException(
+            hsTrabajadasNoValidaException ex, WebRequest request
     ) {
         Map<String, Object> responseBody = new LinkedHashMap<>();
         responseBody.put("message", ex.getMessage());
