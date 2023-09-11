@@ -29,4 +29,4 @@ Puedes ejecutar la aplicación desde tu IDE de preferencia.
 
 - En HU-006 algunas de las validaciones podrían haberse realizado basándose en el booleano "laborable", pero opté por limitarme a lo que decían los criterios de aceptación.
 
-- La aplicación esta completa, si hay algun error puede que sea de tílde en las respuestas o comillas diferentes.
+- La aplicación esta completa, si hay algún error puede que sea de tílde en las respuestas o comillas diferentes.
