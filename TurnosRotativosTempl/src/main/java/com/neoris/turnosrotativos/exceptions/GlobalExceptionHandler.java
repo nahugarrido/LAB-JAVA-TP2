@@ -10,22 +10,22 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
             HttpHeaders headers, HttpStatus status, WebRequest request) {
-
         Map<String, Object> responseBody = new LinkedHashMap<>();
-
-        String error = String.valueOf(ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage());
-
-        responseBody.put("message", error);
-
+        List<String> errors = ex.getBindingResult().getFieldErrors()
+                .stream()
+                .map(x -> x.getDefaultMessage())
+                .collect(Collectors.toList());
+        responseBody.put("message", errors);
         return new ResponseEntity<>(responseBody, headers, status);
     }
 
